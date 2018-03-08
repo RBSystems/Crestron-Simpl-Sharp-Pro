@@ -1,4 +1,4 @@
-﻿MainAssembly=S-100_Template.dll:b2460e485069fa906a97affb23275753
+﻿MainAssembly=S-100_Template.dll:1fbaefe64dac3f5cfe0e127c9eaf399f
 MainAssemblyMinFirmwareVersion=1.009.0029
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
 ü
@@ -38,9 +38,9 @@ DependencySource=SimplSharpHelperInterface.dll:aed72eb0e19559a3f56708be76445dcd
 DependencyPath=S-100_Template.cpz:SimplSharpHelperInterface.dll
 DependencyMainAssembly=SimplSharpHelperInterface.dll:aed72eb0e19559a3f56708be76445dcd
 ü
-DependencySource=SimplSharpPro.exe:7e854ecb37008de772fa7a94a71d0188
+DependencySource=SimplSharpPro.exe:f14203823b94a13a41476289d9e9b8d6
 DependencyPath=S-100_Template.cpz:SimplSharpPro.exe
-DependencyMainAssembly=SimplSharpPro.exe:7e854ecb37008de772fa7a94a71d0188
+DependencyMainAssembly=SimplSharpPro.exe:f14203823b94a13a41476289d9e9b8d6
 ü
 DependencySource=SimplSharpTimerEventInterface.dll:c08c24694aafb0f575a49c66f8491477
 DependencyPath=S-100_Template.cpz:SimplSharpTimerEventInterface.dll

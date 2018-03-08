@@ -975,11 +975,11 @@ namespace S_100_Template
                     // determine the state of the button
                     switch (args.NewButtonState)
                     {
-                        case eButtonState.Pressed:
+                        case eButtonState.Pressed:      // Close relay when button is pressed
                             this.myRelays[2].Close();
                             SetRoomState(eRoomStates.Off);
                             break;
-                        case eButtonState.Released:
+                        case eButtonState.Released:     // open relay when button is released
                             this.myRelays[2].Open();
                             break;
                     }
