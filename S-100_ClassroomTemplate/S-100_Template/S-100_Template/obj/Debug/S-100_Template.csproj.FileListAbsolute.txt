@@ -1,0 +1,32 @@
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\obj\Debug\ResolveAssemblyReference.cache
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\S-100_Template.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\S-100_Template.pdb
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.DeviceSupport.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.DM.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.Fusion.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.GeneralIO.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.Keypads.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.UI.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\SimplSharpHelperInterface.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\SimplSharpPro.exe
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\SimplSharpTimerEventInterface.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\obj\Debug\S-100_Template.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\obj\Debug\S-100_Template.pdb
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\S-100_Template.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\S-100_Template.pdb
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.DeviceSupport.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.DM.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.Fusion.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.GeneralIO.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.Keypads.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.UI.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\SimplSharpHelperInterface.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\SimplSharpPro.exe
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\SimplSharpTimerEventInterface.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\obj\Debug\ResolveAssemblyReference.cache
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\obj\Debug\S-100_Template.dll
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\obj\Debug\S-100_Template.pdb
+C:\Bret_Code\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.EthernetCommunications.dll
+C:\Bret SubervsionCode\vscode_crestron_code\S-100_ClassroomTemplate\S-100_Template\S-100_Template\bin\Debug\Crestron.SimplSharpPro.EthernetCommunications.dll

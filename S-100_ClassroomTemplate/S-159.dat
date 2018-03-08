@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<S_100ConfigData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Modified>true</Modified>
+  <RoomName>S-100 Rooms</RoomName>
+  <RoomGuid/>
+  <OccTimeout>1800</OccTimeout>
+  <DisplayType>PanasonicPT_DW5500</DisplayType>
+  <UseDmRmc>false</UseDmRmc>
+</S_100ConfigData>
