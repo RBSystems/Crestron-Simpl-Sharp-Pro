@@ -1,0 +1,16 @@
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\bin\Fusion.dll
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\bin\Fusion.pdb
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\bin\Crestron.SimplSharpPro.DeviceSupport.dll
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\bin\Crestron.SimplSharpPro.Fusion.dll
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\bin\Crestron.SimplSharpPro.UI.dll
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\bin\SimplSharpCustomAttributesInterface.dll
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\bin\SimplSharpHelperInterface.dll
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\bin\SimplSharpPro.exe
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\obj\Debug\Fusion.dll
+C:\Users\rbaumann\OneDrive\Visual Studio 2008\Projects\Examples for Thomas\Fusion\obj\Debug\Fusion.pdb
+C:\Users\mmcreavy\Documents\Crestron Files\Crestron Reference\Fusion RV\2 - Reference\3 - Custom - Fusion Processor Programming\Simpl# Example\Fusion Simpl Sharp Example\Fusion\bin\Fusion.dll
+C:\Users\mmcreavy\Documents\Crestron Files\Crestron Reference\Fusion RV\2 - Reference\3 - Custom - Fusion Processor Programming\Simpl# Example\Fusion Simpl Sharp Example\Fusion\bin\Fusion.pdb
+C:\Users\mmcreavy\Documents\Crestron Files\Crestron Reference\Fusion RV\2 - Reference\3 - Custom - Fusion Processor Programming\Simpl# Example\Fusion Simpl Sharp Example\Fusion\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\mmcreavy\Documents\Crestron Files\Crestron Reference\Fusion RV\2 - Reference\3 - Custom - Fusion Processor Programming\Simpl# Example\Fusion Simpl Sharp Example\Fusion\obj\Debug\Fusion.dll
+C:\Users\mmcreavy\Documents\Crestron Files\Crestron Reference\Fusion RV\2 - Reference\3 - Custom - Fusion Processor Programming\Simpl# Example\Fusion Simpl Sharp Example\Fusion\obj\Debug\Fusion.pdb
