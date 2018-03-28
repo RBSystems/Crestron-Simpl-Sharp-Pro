@@ -27,10 +27,13 @@ namespace S_100_Template
 
         private const uint KEYPAD_ID = 0x25;// desk testing is 04, S-159 is 25
         private const uint FUSION_ID = 0x0A;
+        private const uint DMRMC200C_ID = 0x14;
         //private const uint OCCSENSOR_ID = 0x97;
-        //private const uint FUSION_ID = 0x03;
         private const uint XPANEL_ID = 0x03;
         private Relay[] myRelays;
+        //private Versiport[] OccSensorPorts;
+        private DigitalInput[] DigitalInputs;
+        
         //private const uint VIDEO_SWITCH_ID = 0x0a;
 
 
@@ -44,7 +47,7 @@ namespace S_100_Template
         ConfigLoader<S_100ConfigData> RoomConfig;
         private eSystemStatus SystemStatus;
         private ushort _volume;
-        private byte keyNum;
+        //private byte keyNum;
         //private ushort _newVol;
         private ushort scaledVol;
         //private DMInputEventHandler DmScalarInput; 
@@ -57,6 +60,15 @@ namespace S_100_Template
         public delegate void VolumeChangeHandler(object source, ushort volume);
 
         public event VolumeChangeHandler VolumeScaleEvent;
+
+        /// <summary>
+        /// Delegate for a Versiport change 
+        /// </summary>
+        /// <param name="volume">versiport change raising this event.</param>
+
+        //public delegate void VersiPortChangeHandler(); -- already exists
+
+        public event VersiportEventHandler PortChangeEvent;
 
         /// <summary>
         /// Map of possible start up errors, to the corresponding keypad LED to alert the user
@@ -141,7 +153,9 @@ namespace S_100_Template
         //};
 
         private enum eRvBools : byte
-        {            
+        {  
+            RoomUnoccupied = 4,
+            FusionDigitalInput1 = 60
         }
 
         /// <summary>
@@ -149,9 +163,9 @@ namespace S_100_Template
         /// </summary>
         public enum eRvUshorts : byte
         {
-            FusionVolume = 2,
-            FusionLampHour1 = 51,
-            FusionLampHour2 = 52
+            FusionVolume = 53,
+            Lamp_1_Hours = 51,
+            Lamp_2_Hours = 52
         }
 
         /// <summary>
@@ -272,7 +286,7 @@ namespace S_100_Template
             {
                 VolumeScaleEvent(this, _volume);
             }
-            CrestronConsole.PrintLine("Volume is {0}, scaled is {1}", _volume, scaledVol);
+            CrestronConsole.PrintLine("Volume is {0}, scaled is {1}", DmVolume, scaledVol);
             VolumeRampTimer.Reset(VOLUME_RAMP_SPEED);
         }
 
@@ -325,8 +339,7 @@ namespace S_100_Template
         /// 
         /// You cannot send / receive data in the constructor
         /// </summary>
-        public ControlSystem()
-            : base()
+        public ControlSystem(): base()
         {
             try
             {
@@ -341,12 +354,15 @@ namespace S_100_Template
                 #region VersiPort
                 if (this.SupportsVersiport)
                 {
+                    PortChangeEvent += new VersiportEventHandler(ControlSystem_VersiportChange);
+                     //+= new VersiportEventHandler(ControlSystem_VersiportChange);
                     for (uint i = 1; i <= 2; i++)
                     {
                         if (this.VersiPorts[i].Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                             ErrorLog.Error("Error Registering Versiport 1: {0}", this.VersiPorts[i].DeviceRegistrationFailureReason);
                         else
                             this.VersiPorts[i].SetVersiportConfiguration(eVersiportConfiguration.DigitalOutput);
+                            CrestronConsole.PrintLine("Versiport {0} registered",this.VersiPorts[i]);
                     }
                 }
                 #endregion
@@ -359,16 +375,41 @@ namespace S_100_Template
                     for (uint i = 1; i <= this.RelayPorts.Count; i++)
                     {
                         myRelays[i] = RelayPorts[i];
-                        if (myRelays[i].Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                        if (myRelays[i].Register() == eDeviceRegistrationUnRegistrationResponse.Success)
+                            CrestronConsole.PrintLine("Relay regisitered OKAY");
+                        else if(myRelays[i].Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                             ErrorLog.Error("Error Registering Relay {0}: {1}", myRelays[i].ID, myRelays[i].DeviceRegistrationFailureReason);
                     }
                 }
                 #endregion
+                #region DigitalInputs
+                if (this.SupportsDigitalInput)
+                {
+                    DigitalInputs = new DigitalInput[this.DigitalInputPorts.Count + 1];
+                    for (uint i = 1; i <= this.DigitalInputPorts.Count; i++)
+                    {
+                        DigitalInputs[i] = DigitalInputPorts[i];
+                        if (DigitalInputs[i].Register() == eDeviceRegistrationUnRegistrationResponse.Success)
+                            CrestronConsole.PrintLine("Digital Input regisitered OKAY");
+                        else if (myRelays[i].Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                            ErrorLog.Error("Error Registering Digital Input {0}: {1}", myRelays[i].ID, myRelays[i].DeviceRegistrationFailureReason);
+                    }
+                    this.DigitalInputs[1].StateChange += new DigitalInputEventHandler(DigInput_StateChange);
+                }
+                #endregion
+
             }
             catch (Exception e)
             {
                 ErrorLog.Error("Error in the constructor: {0}", e.Message);
             }
+        }
+
+        void DigInput_StateChange(DigitalInput digitalInput, DigitalInputEventArgs args)
+        {
+            CrestronConsole.PrintLine("Digtial input {0} state has changed to {1}", digitalInput.ID, digitalInput.State);
+            RV.UserDefinedBooleanSigDetails[(uint)eRvBools.FusionDigitalInput1].InputSig.BoolValue = digitalInput.State;
+            //RV.
         }
 
         		/// <summary>
@@ -448,7 +489,12 @@ namespace S_100_Template
                         CrestronConsole.PrintLine("Keypad registered OKAY and status is running");
                     else
                     CrestronConsole.PrintLine("Could not register the keypad. Cause: {0}", Keypad.RegistrationFailureReason);
-                    RV = new FusionRoom(FUSION_ID, this, RoomConfig.Details.RoomName, RoomConfig.Details.RoomGuid);
+                    //RV = new FusionRoom(FUSION_ID, this, RoomConfig.Details.RoomName, RoomConfig.Details.RoomGuid);
+                    RV = new FusionRoom(FUSION_ID, this, "S-159", "E2803B1B-0E86-4f0b-B142-66398558631A");
+                    if (RV.Register() == eDeviceRegistrationUnRegistrationResponse.Success)
+                        CrestronConsole.PrintLine("FUSION REGISTERED and is {0}", RV.IsOnline);
+                    else
+                    CrestronConsole.PrintLine("Could not register FUSION. Cause: {0}", RV.RegistrationFailureReason);
                     RV.FusionStateChange += new FusionStateEventHandler(RV_FusionStateChange);
                     RV.ExtenderRoomViewSchedulingDataReservedSigs.Use();
                     RV.ExtenderRoomViewSchedulingDataReservedSigs.DeviceExtenderSigChange += new DeviceExtenderJoinChangeEventHandler(ExtenderRoomViewSchedulingDataReservedSigs_DeviceExtenderSigChange);
@@ -457,9 +503,15 @@ namespace S_100_Template
                     AutoOnMeetingTimer = new CTimer(AutoOnCallback, null, Timeout.Infinite, Timeout.Infinite);
                     VolumeRampTimer = new CTimer(VolumeRamp, null, Timeout.Infinite, Timeout.Infinite);
                     _volume = 35;
+                    //RV.AddAsset(eAssetType.
                     //Crestron.SimplSharpPro.DM.Cards.Card.Dmps3HdmiInputWithoutAnalogAudio CfmInput;
                     //Crestron.SimplSharp.EthernetAdapterType.EthernetLANAdapter rmc3EthOutput;
-                    DmScaler = new DmRmc200C(14,this);
+                    DmScaler = new DmRmc200C(DMRMC200C_ID, this);
+                    if (DmScaler.Register() == eDeviceRegistrationUnRegistrationResponse.Success)
+                        CrestronConsole.PrintLine("DMScaler regisitered DM OK");
+                    else
+                        CrestronConsole.PrintLine("DMScaler not register Keypad. Cause: {0}", Keypad.RegistrationFailureReason);
+
                     switch (RoomConfig.Details.DisplayType)
                     {
                         case eProjectorTypes.PanasonicPT_DW5500:
@@ -734,18 +786,19 @@ namespace S_100_Template
         {
             // bools (digitals)
             //RV.AddSig(eSigType.Bool, (uint)eRvBools.CfmVideoSync, "CFM Video Sync", eSigIoMask.InputSigOnly);
+            RV.AddSig(eSigType.Bool, (uint)eRvBools.RoomUnoccupied, "RoomOccupied", eSigIoMask.InputSigOnly);
 
 
             // ushorts (analogs)
             RV.AddSig(eSigType.UShort, (uint)eRvUshorts.FusionVolume, "Fusion Volume", eSigIoMask.InputOutputSig);
-            RV.AddSig(eSigType.UShort, (uint)eRvUshorts.FusionLampHour1, "Lamp Hour One", eSigIoMask.InputSigOnly);
-            RV.AddSig(eSigType.UShort, (uint)eRvUshorts.FusionLampHour2, "Lamp Hour Two", eSigIoMask.InputSigOnly);
+            RV.AddSig(eSigType.UShort, (uint)eRvUshorts.Lamp_1_Hours, "Lamp_1_Hours", eSigIoMask.InputSigOnly);
+            RV.AddSig(eSigType.UShort, (uint)eRvUshorts.Lamp_2_Hours, "Lamp_2_Hours", eSigIoMask.InputSigOnly);
 
             // strings (serials)
             //RV.AddSig(eSigType.String, (uint)eRvStrings.CfmVideoResolution, "CFM Video Resolution", eSigIoMask.InputSigOnly);
 
             // must be called if using Fusion AutoDiscovery
-            //FusionRVI.GenerateFileForAllFusionDevices();
+            FusionRVI.GenerateFileForAllFusionDevices();
         }
 
         /// <summary>
@@ -975,11 +1028,11 @@ namespace S_100_Template
                     // determine the state of the button
                     switch (args.NewButtonState)
                     {
-                        case eButtonState.Pressed:      // Close relay when button is pressed
+                        case eButtonState.Pressed:
                             this.myRelays[2].Close();
                             SetRoomState(eRoomStates.Off);
                             break;
-                        case eButtonState.Released:     // open relay when button is released
+                        case eButtonState.Released:
                             this.myRelays[2].Open();
                             break;
                     }
@@ -997,17 +1050,20 @@ namespace S_100_Template
                     switch (args.NewButtonState)
                     {
                         case eButtonState.Pressed:
+                            VolumeRampTimer.Reset(0);
                             // acessssing the volume change action
                             VolumeRampAction = VolDown;
                             // start the ramp timer now
-                            VolumeRampTimer.Reset(0);
-                            Keypad.Feedbacks[(uint)eKeypadButtons.VolDownButtonAndFb6].State = true;
+                            
+                            //Keypad.Feedbacks[(uint)eKeypadButtons.VolDownButtonAndFb6].State = true;
+                            //Keypad.Feedbacks[(uint)eKeypadButtons.VolDownButtonAndFb6].BlinkPattern = eButtonBlinkPattern.InvertedMediumBlip;
                             break;
 
                         case eButtonState.Released:
                             // stop the ramp timer
                             VolumeRampTimer.Stop();
-                            Keypad.Feedbacks[(uint)eKeypadButtons.VolDownButtonAndFb6].State = false;
+                            //Keypad.Feedbacks[(uint)eKeypadButtons.VolDownButtonAndFb6].State = false;
+                            //Keypad.Feedbacks[(uint)eKeypadButtons.VolDownButtonAndFb6].BlinkPattern = eButtonBlinkPattern.AlwaysOn;
                             break;
 
                         default:
@@ -1028,9 +1084,10 @@ namespace S_100_Template
                     switch (args.NewButtonState)
                     {
                         case eButtonState.Pressed:
-                            // assing the volume change action
+                            // setting the volume change action
                             VolumeRampAction = VolUp;
-                            Keypad.Feedbacks[(uint)eKeypadButtons.VolUpButtonAndFb5].State = true;
+                            //Keypad.Feedbacks[(uint)eKeypadButtons.VolUpButtonAndFb5].State = true;
+                            //Keypad.Feedbacks[(uint)eKeypadButtons.VolUpButtonAndFb5].BlinkPattern = eButtonBlinkPattern.InvertedMediumBlip;
 
                             // start the ramp timer now
                             VolumeRampTimer.Reset(0);
@@ -1039,7 +1096,8 @@ namespace S_100_Template
                         case eButtonState.Released:
                             // stop the ramp timer
                             VolumeRampTimer.Stop();
-                            Keypad.Feedbacks[(uint)eKeypadButtons.VolUpButtonAndFb5].State = false;
+                            //Keypad.Feedbacks[(uint)eKeypadButtons.VolUpButtonAndFb5].State = false;
+                            //Keypad.Feedbacks[(uint)eKeypadButtons.VolUpButtonAndFb5].BlinkPattern = eButtonBlinkPattern.AlwaysOn;
                             break;
 
                         default:
@@ -1206,7 +1264,7 @@ namespace S_100_Template
 		/// <param name="IsOn">Volume level of the display.</param>
         void Scaled_VolumeEvent(object source, ushort Volume)
 		{
-            scaledVol = (ushort)CrestronEnvironment.ScaleWithLimits(DmVolume,  MaxVolume, MinVolume, 65535, 0);
+            scaledVol = (ushort)CrestronEnvironment.ScaleWithLimits(Volume,  MaxVolume, MinVolume, 65535, 0);
             RV.UserDefinedUShortSigDetails[(uint)eRvUshorts.FusionVolume].InputSig.UShortValue = scaledVol;
             DmScaler.AudioOutput.Volume.UShortValue = scaledVol;
 			Keypad.BargraphValue.UShortValue = scaledVol;
@@ -1215,8 +1273,8 @@ namespace S_100_Template
         void Projector_LampEvent(IBasicProjector sender, ushort lamph1, ushort lamph2)
         {
             CrestronConsole.PrintLine("Projector Lamp hours: Lamp 1 = {0}, Lamp 2 = {1}", lamph1, lamph2);
-            RV.UserDefinedUShortSigDetails[(uint)eRvUshorts.FusionLampHour1].InputSig.UShortValue = lamph1;
-            RV.UserDefinedUShortSigDetails[(uint)eRvUshorts.FusionLampHour2].InputSig.UShortValue = lamph2;
+            RV.UserDefinedUShortSigDetails[(uint)eRvUshorts.Lamp_1_Hours].InputSig.UShortValue =  lamph1;
+            RV.UserDefinedUShortSigDetails[(uint)eRvUshorts.Lamp_2_Hours].InputSig.UShortValue = lamph2;
             CrestronConsole.PrintLine("Projector Lamp hours end of method");
         }
 
@@ -1235,15 +1293,17 @@ namespace S_100_Template
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb1].State = false;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb2].State = false;
                         //Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb].BlinkPattern = eButtonBlinkPattern.AlwaysOn;
+                        Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb3].BlinkPattern = eButtonBlinkPattern.AlwaysOn;
+                        Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb4].BlinkPattern = eButtonBlinkPattern.AlwaysOn;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb3].State = true;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb4].State = true;
                         RV.DisplayPowerOn.InputSig.BoolValue = false;
                         RV.SystemPowerOn.InputSig.BoolValue = false;
                         break;
 
-                case 1: //warming - proj is on state                       
-                        //Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb1].State = true;
-                        //Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb2].State = true;
+                case 1: //warming                      
+                        Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb1].State = true;
+                        Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb2].State = true;
                         //keyNum = 1;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb1].BlinkPattern = eButtonBlinkPattern.MediumBlink;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb2].BlinkPattern = eButtonBlinkPattern.MediumBlink;
@@ -1260,16 +1320,17 @@ namespace S_100_Template
                         //KeypadBlinkTimer.Stop();
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb1].State = true;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb2].State = true;
-                        //Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb1].BlinkPattern = eButtonBlinkPattern.AlwaysOn;
+                        Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb1].BlinkPattern = eButtonBlinkPattern.AlwaysOn;
+                        Keypad.Feedbacks[(uint)eKeypadButtons.ProjOnButtonAndFb2].BlinkPattern = eButtonBlinkPattern.AlwaysOn;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb3].State = false;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb4].State = false;
                         RV.DisplayPowerOn.InputSig.BoolValue = true;
                         RV.SystemPowerOn.InputSig.BoolValue = true;
                         break;
                     
-                case 3: // cooling -- proj is off state
-                        //Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb3].State = true;
-                        //Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb4].State = true;
+                case 3: // cooling --
+                        Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb3].State = true;
+                        Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb4].State = true;
                         //keyNum = 2;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb3].BlinkPattern = eButtonBlinkPattern.MediumBlink;
                         Keypad.Feedbacks[(uint)eKeypadButtons.ProjOffButtonAndFb4].BlinkPattern = eButtonBlinkPattern.MediumBlink;
@@ -1321,6 +1382,7 @@ namespace S_100_Template
             if (port == Keypad.VersiPorts[2])
                 CrestronConsole.PrintLine("Port 2: {0}", port.DigitalIn);
         }
+
 
         /// <summary>
         /// Event Handler for Programmatic events: Stop, Pause, Resume.

@@ -236,7 +236,7 @@ namespace S_100_Template
                 IsOn = true;
                 if (PowerEvent != null)
                     PowerEvent(this, fbNum);
-                CrestronConsole.PrintLine("signal _isWarming is {0}, and fbNum is {1}", IsWarming, fbNum);
+                //CrestronConsole.PrintLine("signal _isWarming is {0}, and fbNum is {1}", IsWarming, fbNum);
             }
             else if (msg.Contains("2") && (msg.Length == 2))      //on and not warming
             {
@@ -246,7 +246,7 @@ namespace S_100_Template
                 IsWarming = false;
                 if (PowerEvent != null)
                     PowerEvent(this, fbNum);
-                CrestronConsole.PrintLine("signal _isWarming is {0}, and fbNum is {1}", IsWarming, fbNum);
+                //CrestronConsole.PrintLine("signal _isWarming is {0}, and fbNum is {1}", IsWarming, fbNum);
             }
             else if (msg.Contains("3") && (msg.Length == 2))      //cooling
             {
@@ -256,7 +256,7 @@ namespace S_100_Template
                 IsOn = false;
                 if (PowerEvent != null)
                     PowerEvent(this, fbNum);
-                CrestronConsole.PrintLine("signal _isWarming is {0}, and fbNum is {1}", IsWarming, fbNum);
+                //CrestronConsole.PrintLine("signal _isWarming is {0}, and fbNum is {1}", IsWarming, fbNum);
             }
             else if ((msg.Length == 5) && (lastLampQueried == 1))    //get lamp hour 1       
             {
