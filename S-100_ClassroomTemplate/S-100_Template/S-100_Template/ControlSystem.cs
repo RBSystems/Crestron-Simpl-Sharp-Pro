@@ -1369,7 +1369,7 @@ namespace S_100_Template
                 case (eEthernetEventType.LinkUp):
                     if (ethernetEventArgs.EthernetAdapter == EthernetAdapterType.EthernetLANAdapter)
                     {
-
+                        //
                     }
                     break;
             }
